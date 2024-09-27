@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cafe Menu</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Welcome </h1>
+        <p>Select one of the options below to manage your menu:</p>
+
+        <div class="list-group">
+            <a href="{% url 'item_list' %}" class="list-group-item list-group-item-action">
+                مدیریت محصولات
+            </a>
+            <a href="{% url 'category_list' %}" class="list-group-item list-group-item-action">
+                دسته بندی ها
+            </a>
+        </div>
+    </div>
+</body>
+</html>
