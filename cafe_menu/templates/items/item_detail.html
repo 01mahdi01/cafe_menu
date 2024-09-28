@@ -9,6 +9,7 @@
         <h1>{{ item.name }}</h1>
         <p><strong>Category:</strong> {{ item.category.title }}</p>
         <p><strong>Ingredients:</strong> {{ item.ingredients }}</p>
+        <p><strong>price:</strong> {{ item.price }}</p>
         <p><strong>Image:</strong><br>
             {% if item.image %}
                 <img src="{{ item.image.url }}" alt="{{ item.name }}" width="300">

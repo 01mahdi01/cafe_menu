@@ -13,6 +13,7 @@ class Item(models.Model):
     ingredients=models.TextField()
     image=models.ImageField()
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
+    price=models.IntegerField(null=True)
 
 
 
