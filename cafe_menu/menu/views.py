@@ -89,3 +89,6 @@ def delete_category(request, category_id):
         category.delete()
         return redirect('category_list')
     return render(request, 'categories/category_confirm_delete.html', {'category': category})
+def test(request):
+    print(request)
+    return render(request,'index.html',context=None)

@@ -154,6 +154,7 @@ CACHES = {
 }
 # Cache time to live is 15 minutes.
 CACHE_TTL = 60 * 15
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
 
 
 MEDIA_URL = '/media/'
