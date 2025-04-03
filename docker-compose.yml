@@ -2,17 +2,19 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:14.1
-    container_name: postgres
+    image: docker-mirror.kubarcloud.com/postgres:17.2
+    container_name: postgres_sorayande
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
-      - POSTGRES_DB=cafe_menu
-      - POSTGRES_USER=mahdi
+      - POSTGRES_DB=sorayandeh
+      - POSTGRES_USER=sorayandeh
       - POSTGRES_PASSWORD=123456789
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistent storage for database
 
   rabbitmq:
-    image: "rabbitmq:alpine"
+    image: docker-mirror.kubarcloud.com/rabbitmq:alpine
     container_name: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
@@ -24,11 +26,10 @@ services:
     build:
       context: .
       dockerfile: docker/production.Dockerfile
-    container_name: django
+    container_name: django-sorayande
     command: ./docker/web_entrypoint.sh
     environment:
-      - DATABASE_URL=psql://mahdi:123456789@db:5432/cafe_menu
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - DATABASE_URL=psql://sorayandeh:123456789@db:5432/sorayandeh
     volumes:
       - .:/app
     ports:
@@ -38,36 +39,19 @@ services:
       - rabbitmq
     restart: on-failure
 
-  celery:
-    build:
-      context: .
-      dockerfile: docker/production.Dockerfile
-    # command: celery -A cafe_menu.tasks worker -l info --without-gossip --without-mingle --without-heartbeat
-    container_name: worker
-    command: ./docker/celery_entrypoint.sh
+  elasticsearch:
+    image: docker-mirror.kubarcloud.com/elasticsearch:8.10.3
+    container_name: elasticsearch
     environment:
-      - DATABASE_URL=psql://mahdi:123456789@db:5432/cafe_menu
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - discovery.type=single-node  # Required for single-node clusters
+      - xpack.security.enabled=false  # Disable authentication for dev mode
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Adjust heap size (512MB)
+    ports:
+      - "9200:9200"
+      - "9300:9300"
     volumes:
-      - .:/app
-    depends_on:
-      - db
-      - rabbitmq
-    restart: on-failure
+      - elasticsearch_data:/usr/share/elasticsearch/data
 
-  beats:
-    build:
-      context: .
-      dockerfile: docker/production.Dockerfile
-    # command: celery -A cafe_menu.tasks beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    container_name: beats
-    command: ./docker/beats_entrypoint.sh
-    environment:
-      - DATABASE_URL=psql://mahdi:123456789@db:5432/cafe_menu
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - rabbitmq
-    restart: on-failure
+volumes:
+  postgres_data:  # Define named volume for database persistence
+  elasticsearch_data:
