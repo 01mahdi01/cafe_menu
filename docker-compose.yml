@@ -39,19 +39,8 @@ services:
       - rabbitmq
     restart: on-failure
 
-  elasticsearch:
-    image: docker-mirror.kubarcloud.com/elasticsearch:8.10.3
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node  # Required for single-node clusters
-      - xpack.security.enabled=false  # Disable authentication for dev mode
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Adjust heap size (512MB)
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+  
 
 volumes:
   postgres_data:  # Define named volume for database persistence
-  elasticsearch_data:
+
