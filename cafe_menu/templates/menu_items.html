@@ -68,7 +68,7 @@
       <a href="{{ coffees.0.image.url }}" class="glightbox">
         <img src="{{ coffees.0.image.url }}" class="menu-img img-fluid" alt="{{ coffees.0.name }}">
       </a>
-    {% endif %}
+
 
     <div class="dropdown custom-dropdown mt-3">
       <h4 class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -84,7 +84,9 @@
               <hr class="dropdown-divider">
             {% endif %}
           </li>
+
         {% endfor %}
+      {% endif %}
       </ul>
     </div>
   </div>
