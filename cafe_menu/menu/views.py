@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Item, Category
 from .forms import ItemForm, CategoryForm
-
-
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.core.exceptions import ObjectDoesNotExist
 def home(request):
     return render(request, 'home.html')
 # CRUD for Item
@@ -90,5 +91,38 @@ def delete_category(request, category_id):
         return redirect('category_list')
     return render(request, 'categories/category_confirm_delete.html', {'category': category})
 def test(request):
+    categories = Category.objects.all()
     items = Item.objects.all()
-    return render(request,'index.html',{'items': items})
+    return render(request,'index.html',{'items': items, 'categories': categories})
+
+
+from django.core.serializers import serialize
+
+def filter_items_by_category(request):
+    category_id = request.GET.get('category_id')
+    if not category_id:
+        return JsonResponse({'error': 'Category ID is required'}, status=400)
+
+    try:
+        # Filter items based on category ID
+        items = Item.objects.filter(category_id=category_id)
+        category = Category.objects.get(id=category_id)  # Get the category
+
+        if not items:
+            return JsonResponse({'error': 'No items found for this category'}, status=404)
+
+        # Serialize category data to avoid the JSON serialization error
+        category_data = {
+            'id': category.id,
+            'title': category.title,
+        }
+
+        # Render the filtered items with category title
+        html = render_to_string('menu_items.html', {'items': items, 'category': category})
+
+        return JsonResponse({'html': html, 'category': category_data})
+
+    except Category.DoesNotExist:
+        return JsonResponse({'error': 'Category not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': f'Server Error: {str(e)}'}, status=500)
