@@ -107,6 +107,10 @@ def filter_items_by_category(request):
         # Filter items based on category ID
         items = Item.objects.filter(category_id=category_id)
         category = Category.objects.get(id=category_id)  # Get the category
+        coffees = items.filter(id__in=range(0, 8))
+        if category.id == 2:
+            items = items.exclude(id__in=range(0, 8))
+
 
         if not items:
             return JsonResponse({'error': 'No items found for this category'}, status=404)
@@ -118,7 +122,7 @@ def filter_items_by_category(request):
         }
 
         # Render the filtered items with category title
-        html = render_to_string('menu_items.html', {'items': items, 'category': category})
+        html = render_to_string('menu_items.html', {'items': items, 'category': category,'coffees':coffees} )
 
         return JsonResponse({'html': html, 'category': category_data})
 
