@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.context_processors import request
 
 
 class Category(models.Model):
@@ -11,7 +12,7 @@ class Category(models.Model):
 class Item(models.Model):
     name=models.CharField(max_length=50)
     ingredients=models.TextField()
-    image=models.ImageField()
+    image=models.ImageField(null=True, blank=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     price=models.IntegerField(null=True)
 
