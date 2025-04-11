@@ -11,7 +11,7 @@ class Category(models.Model):
 
 class Item(models.Model):
     name=models.CharField(max_length=50)
-    ingredients=models.TextField()
+    ingredients=models.TextField(max_length=500)
     image=models.ImageField(null=True, blank=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     price=models.IntegerField(null=True)
